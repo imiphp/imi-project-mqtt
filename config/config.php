@@ -24,7 +24,7 @@ return [
     'mainServer'    =>    [
         'namespace'     =>    'ImiApp\MQTTServer',
         'type'          =>    'MQTT',
-        'host'          =>    '127.0.0.1',
+        'host'          =>    '0.0.0.0',
         'port'          =>    8081,
         'configs'       =>    [
             'worker_num'        =>  1,
@@ -37,7 +37,7 @@ return [
         'MQTTSSL'   =>  [
             'namespace'     =>    'ImiApp\MQTTSServer',
             'type'          =>    'MQTT',
-            'host'          =>    '127.0.0.1',
+            'host'          =>    '0.0.0.0',
             'port'          =>    8082,
             'sockType'  =>  SWOOLE_SOCK_TCP | SWOOLE_SSL, // SSL 需要设置一下 sockType
             'configs'       =>    [
