@@ -52,33 +52,22 @@ return [
     // 连接池配置
     'pools'    =>    [
         'redis'    =>    [
-            'sync'    =>    [
-                'pool'    =>    [
-                    'class'        =>    \Imi\Redis\SyncRedisPool::class,
-                    'config'    =>    [
-                        'maxResources'    =>    10,
-                        'minResources'    =>    0,
-                    ],
+            'pool'    =>    [
+                // 同步池类名
+                'syncClass'     =>    \Imi\Redis\SyncRedisPool::class,
+                // 协程池类名
+                'asyncClass'    =>    \Imi\Redis\CoroutineRedisPool::class,
+                // 连接池配置
+                'config'    =>    [
+                    'maxResources'    =>    10,
+                    'minResources'    =>    0,
                 ],
-                'resource'    =>    [
-                    'host'      => '127.0.0.1',
-                    'port'      => 6379,
-                    'password'  => null,
-                ]
             ],
-            'async'    =>    [
-                'pool'    =>    [
-                    'class'        =>    \Imi\Redis\CoroutineRedisPool::class,
-                    'config'    =>    [
-                        'maxResources'    =>    10,
-                        'minResources'    =>    1,
-                    ],
-                ],
-                'resource'    =>    [
-                    'host'      => '127.0.0.1',
-                    'port'      => 6379,
-                    'password'  => null,
-                ]
+            // 连接池资源配置
+            'resource'    =>    [
+                'host'      => '127.0.0.1',
+                'port'      => 6379,
+                'password'  => null,
             ],
         ],
     ],
