@@ -9,12 +9,5 @@ return [
         'ImiApp\MQTTServer\Controller',
     ],
     'beans'    =>    [
-        'ConnectContextStore'   =>  [
-            'handlerClass'  =>  'ConnectContextRedis',
-        ],
-        'ConnectContextRedis'    =>    [
-            'redisPool' =>   'redis',
-            'lockId'    =>   'redisConnectContextLock',
-        ],
     ],
 ];

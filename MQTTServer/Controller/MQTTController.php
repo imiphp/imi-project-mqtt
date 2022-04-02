@@ -19,6 +19,9 @@ use BinSoul\Net\Mqtt\Packet\UnsubscribeRequestPacket;
 use BinSoul\Net\Mqtt\Packet\UnsubscribeResponsePacket;
 use Imi\Server\Server;
 
+/**
+ * 示例控制器，代码全为示例，请根据实际项目编写
+ */
 class MQTTController extends BaseMQTTController
 {
     /**
@@ -90,8 +93,11 @@ class MQTTController extends BaseMQTTController
             case 'd':
                 $response = new PublishCompletePacket;
                 break;
+            default:
+                throw new \RuntimeException('Unknown topic ' . $request->getTopic());
         }
         $response->setIdentifier($request->getIdentifier());
+        // TODO: 请自行实现推送消息给订阅者
         return $response;
     }
 
@@ -111,8 +117,9 @@ class MQTTController extends BaseMQTTController
         $publishData = new PublishRequestPacket;
         $publishData->setPayload('test');
         $publishData->setTopic('a');
-        Server::send($publishData, $receiveData->getFd());
+        Server::send($publishData, $receiveData->getClientId());
 
+        // TODO: 请自行实现订阅消息
         return $response;
     }
 
@@ -127,6 +134,8 @@ class MQTTController extends BaseMQTTController
     {
         $response = new UnsubscribeResponsePacket;
         $response->setIdentifier($request->getIdentifier());
+        // TODO: 请自行实现取消订阅消息
+
         return $response;
     }
 

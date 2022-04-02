@@ -1,5 +1,8 @@
 <?php
 
+use Imi\App;
+use Imi\AppContexts;
+
 return [
     // 项目根命名空间
     'namespace'    =>    'ImiApp',
@@ -9,25 +12,25 @@ return [
         'beans'        =>    __DIR__ . '/beans.php',
     ],
 
-    // 扫描目录
-    'beanScan'    =>    [
-        'ImiApp\Listener',
-        'ImiApp\Task',
-    ],
+    // // 扫描目录
+    // 'beanScan'    =>    [
+    //     'ImiApp\Listener',
+    //     'ImiApp\Task',
+    // ],
 
-    // 组件命名空间
-    'components'    =>  [
-        'MQTT'  =>  'Imi\MQTT',
-    ],
+    // // 组件命名空间
+    // 'components'    =>  [
+    //     'MQTT'  =>  'Imi\MQTT',
+    // ],
 
     // 主服务器配置
     'mainServer'    =>    [
         'namespace'     =>    'ImiApp\MQTTServer',
-        'type'          =>    'MQTT',
+        'type'          =>    'MQTTServer',
         'host'          =>    '0.0.0.0',
         'port'          =>    8081,
         'configs'       =>    [
-            'worker_num'        =>  1,
+            'worker_num'    =>  1,
         ],
         'controller'    =>  \ImiApp\MQTTServer\Controller\MQTTController::class,
     ],
@@ -36,10 +39,10 @@ return [
     'subServers'        =>    [
         'MQTTSSL'   =>  [
             'namespace'     =>    'ImiApp\MQTTSServer',
-            'type'          =>    'MQTT',
+            'type'          =>    'MQTTServer',
             'host'          =>    '0.0.0.0',
             'port'          =>    8082,
-            'sockType'  =>  SWOOLE_SOCK_TCP | SWOOLE_SSL, // SSL 需要设置一下 sockType
+            'sockType'      =>  SWOOLE_SOCK_TCP | SWOOLE_SSL, // SSL 需要设置一下 sockType
             'configs'       =>    [
                 // 配置证书
                 'ssl_cert_file'     =>  dirname(__DIR__) . '/ssl/server.crt',
@@ -51,20 +54,15 @@ return [
 
     // 连接池配置
     'pools'    =>    [
-        'redis'    =>    [
-            'pool'    =>    [
-                // 同步池类名
-                'syncClass'     =>    \Imi\Redis\SyncRedisPool::class,
-                // 协程池类名
-                'asyncClass'    =>    \Imi\Redis\CoroutineRedisPool::class,
-                // 连接池配置
-                'config'    =>    [
-                    'maxResources'    =>    10,
-                    'minResources'    =>    0,
+        'redis'    => [
+            'pool'    => [
+                'class'        => \Imi\Swoole\Redis\Pool\CoroutineRedisPool::class,
+                'config'       => [
+                    'maxResources'    => 10,
+                    'minResources'    => 0,
                 ],
             ],
-            // 连接池资源配置
-            'resource'    =>    [
+            'resource'    => [
                 'host'      => '127.0.0.1',
                 'port'      => 6379,
                 'password'  => null,
@@ -84,16 +82,57 @@ return [
         'defaultPool'   =>  'redis',
     ],
 
-    // 锁
-    'lock'  =>[
-        'list'  =>  [
-            'redisConnectContextLock' =>  [
-                'class' =>  'RedisLock',
-                'options'   =>  [
-                    'poolName'  =>  'redis',
+    // 日志配置
+    'logger' => [
+        'channels' => [
+            'imi' => [
+                'handlers' => [
+                    [
+                        'env'       => ['cli', 'swoole', 'workerman'],
+                        'class'     => \Imi\Log\Handler\ConsoleHandler::class,
+                        'formatter' => [
+                            'class'     => \Imi\Log\Formatter\ConsoleLineFormatter::class,
+                            'construct' => [
+                                'format'                     => null,
+                                'dateFormat'                 => 'Y-m-d H:i:s',
+                                'allowInlineLineBreaks'      => true,
+                                'ignoreEmptyContextAndExtra' => true,
+                            ],
+                        ],
+                    ],
+                    // RoadRunner worker 下日志
+                    [
+                        'env'       => ['roadrunner'],
+                        'class'     => \Monolog\Handler\StreamHandler::class,
+                        'construct' => [
+                            'stream'  => 'php://stderr',
+                        ],
+                        'formatter' => [
+                            'class'     => \Monolog\Formatter\LineFormatter::class,
+                            'construct' => [
+                                'format'                     => null,
+                                'dateFormat'                 => 'Y-m-d H:i:s',
+                                'allowInlineLineBreaks'      => true,
+                                'ignoreEmptyContextAndExtra' => true,
+                            ],
+                        ],
+                    ],
+                    [
+                        'class'     => \Monolog\Handler\RotatingFileHandler::class,
+                        'construct' => [
+                            'filename' => App::get(AppContexts::APP_PATH_PHYSICS) . '/.runtime/logs/log.log',
+                        ],
+                        'formatter' => [
+                            'class'     => \Monolog\Formatter\LineFormatter::class,
+                            'construct' => [
+                                'dateFormat'                 => 'Y-m-d H:i:s',
+                                'allowInlineLineBreaks'      => true,
+                                'ignoreEmptyContextAndExtra' => true,
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],
     ],
-
 ];
