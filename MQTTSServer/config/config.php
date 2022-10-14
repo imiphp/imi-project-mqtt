@@ -1,13 +1,10 @@
 <?php
 
-use Imi\Log\LogLevel;
+declare(strict_types=1);
+
 return [
-    'configs'    =>    [
+    'configs'    => [
     ],
-    // bean扫描目录
-    'beanScan'    =>    [
-        'ImiApp\MQTTServer\Controller',
-    ],
-    'beans'    =>    [
+    'beans'    => [
     ],
 ];
