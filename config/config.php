@@ -6,9 +6,6 @@ use Imi\App;
 use Imi\AppContexts;
 
 return [
-    // 项目根命名空间
-    'namespace'    => 'ImiApp',
-
     // 配置文件
     'configs'    => [
         'beans'        => __DIR__ . '/beans.php',
