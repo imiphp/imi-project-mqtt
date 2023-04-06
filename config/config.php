@@ -46,8 +46,10 @@ return [
             'pool'    => [
                 'class'        => \Imi\Swoole\Redis\Pool\CoroutineRedisPool::class,
                 'config'       => [
-                    'maxResources'    => 10,
-                    'minResources'    => 0,
+                    'maxResources'              => 32,
+                    'minResources'              => 0,
+                    'checkStateWhenGetResource' => false,
+                    'heartbeatInterval'         => 60,
                 ],
             ],
             'resource'    => [
